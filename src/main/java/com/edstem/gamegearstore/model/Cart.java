@@ -19,12 +19,16 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Builder
+@Setter
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private Long gameId;
     @OneToMany(mappedBy = "cart")
-    private List<CartItem> cartItem = new ArrayList<>();
+    private List<Game> games = new ArrayList<>();
+
+    private int count=0;
 }
+
 
