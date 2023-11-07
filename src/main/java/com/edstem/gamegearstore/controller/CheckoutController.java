@@ -24,8 +24,4 @@ public class CheckoutController {
         return checkoutService.createCheckout(checkoutRequest);
     }
 
-    @GetMapping("/{id}")
-    public CheckoutResponse getCheckout(@PathVariable Long id) {
-        return checkoutService.getCheckout(id);
-    }
 }

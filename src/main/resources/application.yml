@@ -4,10 +4,10 @@ spring:
     username: postgres
     password: Shyam@007
     driver-class-name: org.postgresql.Driver
-  security:
-    user:
-     name: hi
-     password: hi
+#  security:
+#    user:
+#     name: hi
+#     password: hi
   jpa:
     show-sql: true
     hibernate:
