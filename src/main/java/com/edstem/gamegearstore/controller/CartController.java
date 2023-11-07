@@ -46,6 +46,6 @@ public class CartController {
 
     @GetMapping("/login")
     public String login() {
-        return "login sucessfull";
+        return "login successfull";
     }
 }
