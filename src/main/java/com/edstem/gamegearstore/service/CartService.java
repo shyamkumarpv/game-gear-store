@@ -7,6 +7,8 @@ import com.edstem.gamegearstore.model.Game;
 import com.edstem.gamegearstore.repository.CartRepository;
 import com.edstem.gamegearstore.repository.GameRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -18,21 +20,26 @@ public class CartService {
     private final ModelMapper modelMapper;
     private final GameRepository gameRepository;
 
-public CartResponse createCart(Long gameId, CartRequest request) {
-    Game game = gameRepository.findById(gameId)
-            .orElseThrow(() -> new RuntimeException("Game not found"));
+    public CartResponse createCart(Long gameId, CartRequest request) {
+        Game game =
+                gameRepository
+                        .findById(gameId)
+                        .orElseThrow(() -> new RuntimeException("Game not found"));
 
-    Cart cart = new Cart();
-    cart.setGameId(game.getId());
-    cart.setCount(request.getCount());
+        Cart cart = new Cart();
+        cart.setGameId(game.getId());
+        cart.setCount(request.getCount());
 
-    Cart savedCart = cartRepository.save(cart);
+        Cart savedCart = cartRepository.save(cart);
 
-    return modelMapper.map(savedCart, CartResponse.class);
-}
+        return modelMapper.map(savedCart, CartResponse.class);
+    }
 
     public CartResponse addGameToCart(Long cartId, CartRequest cartRequest) {
-        Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new RuntimeException("Cart not found"));
+        Cart cart =
+                cartRepository
+                        .findById(cartId)
+                        .orElseThrow(() -> new RuntimeException("Cart not found"));
         int newCount = cart.getCount() + cartRequest.getCount();
         cart.setCount(newCount);
 
@@ -42,26 +49,20 @@ public CartResponse createCart(Long gameId, CartRequest request) {
         return modelMapper.map(savedCart, CartResponse.class);
     }
 
-
-//    public List<Cart>getAllCart() {
-//    return cartRepository.findAll();
-//    }
-
-    public void deleteFromCart(Long id) {
-        Cart cart = cartRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Cart not found with id " + id));
-
-        cartRepository.delete(cart);
-
+    public List<CartResponse> viewAllCarts() {
+        List<Cart> carts = cartRepository.findAll();
+        return carts.stream()
+                .map(cart -> modelMapper.map(cart, CartResponse.class))
+                .collect(Collectors.toList());
     }
 
+    public void deleteFromCart(Long id) {
+        Cart cart =
+                cartRepository
+                        .findById(id)
+                        .orElseThrow(
+                                () -> new EntityNotFoundException("Cart not found with id " + id));
 
+        cartRepository.delete(cart);
+    }
 }
-
-
-
-
-
-
-
-

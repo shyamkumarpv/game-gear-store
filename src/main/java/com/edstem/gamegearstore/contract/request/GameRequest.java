@@ -1,11 +1,11 @@
 package com.edstem.gamegearstore.contract.request;
 
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 @Getter
 @Builder
 @AllArgsConstructor
@@ -16,4 +16,3 @@ public class GameRequest {
     private String review;
     private BigDecimal price;
 }
-

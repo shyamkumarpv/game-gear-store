@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 @Getter
 @Setter
 @Builder
@@ -15,5 +14,4 @@ import java.util.List;
 public class CartRequest {
     private Long gameId;
     private int count;
-
 }

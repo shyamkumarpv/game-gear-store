@@ -3,7 +3,7 @@ package com.edstem.gamegearstore.controller;
 import com.edstem.gamegearstore.contract.request.GameRequest;
 import com.edstem.gamegearstore.contract.response.GameResponse;
 import com.edstem.gamegearstore.service.GameService;
-import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/games")
 @RequiredArgsConstructor
@@ -23,25 +21,27 @@ public class GameController {
     private final GameService gameService;
 
     @PostMapping
-    public GameResponse addGame(@RequestBody GameRequest request){
+    public GameResponse addGame(@RequestBody GameRequest request) {
         return this.gameService.addGame(request);
     }
+
     @GetMapping
     public List<GameResponse> viewAllGames() {
         return gameService.viewAllGames();
     }
+
     @GetMapping("/{id}")
-    public GameResponse viewGameById(@PathVariable Long id){
+    public GameResponse viewGameById(@PathVariable Long id) {
         return gameService.viewGameById(id);
     }
+
     @PutMapping("/{id}")
-    public GameResponse updateGamesById(
-            @PathVariable Long id,@RequestBody GameRequest request) {
+    public GameResponse updateGamesById(@PathVariable Long id, @RequestBody GameRequest request) {
         return gameService.updateGameById(id, request);
     }
+
     @DeleteMapping("/{id}")
     public String deleteGameById(@PathVariable Long id) {
         return gameService.deleteGameById(id);
     }
-
 }
