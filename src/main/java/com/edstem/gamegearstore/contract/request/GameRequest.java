@@ -15,6 +15,5 @@ import lombok.Setter;
 public class GameRequest {
     private String name;
     private String description;
-    private String review;
     private BigDecimal price;
 }

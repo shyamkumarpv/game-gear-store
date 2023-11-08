@@ -1,0 +1,165 @@
+{
+	"info": {
+		"_postman_id": "77d8805a-11bc-42d8-8877-1094163f9102",
+		"name": "Game-Gear-Store",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28648108"
+	},
+	"item": [
+		{
+			"name": "viewAllGames",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/games"
+			},
+			"response": []
+		},
+		{
+			"name": "addGame",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Candy Crush\",\r\n    \"description\": \"Candy Crush Saga\",\r\n    \"review\": \"Rated 5 stars by players!\",\r\n    \"price\": 49.99\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/games"
+			},
+			"response": []
+		},
+		{
+			"name": "viewGameById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/games/6"
+			},
+			"response": []
+		},
+		{
+			"name": "updateGamesById",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": "http://localhost:8080/games/6"
+			},
+			"response": []
+		},
+		{
+			"name": "deleteGameById",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:8080/games/12"
+			},
+			"response": []
+		},
+		{
+			"name": "addGameToCart",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {
+						"password": "hi",
+						"username": "hi"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"gameId\": 1,\r\n    \"count\": 7\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/cart/12/addGame"
+			},
+			"response": []
+		},
+		{
+			"name": "viewCart",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/cart/all"
+			},
+			"response": []
+		},
+		{
+			"name": "createCart",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"count\": 3\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/cart/1/create"
+			},
+			"response": []
+		},
+		{
+			"name": "deleteFromCart",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:8080/cart/1"
+			},
+			"response": []
+		},
+		{
+			"name": "createCheckout",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"John Doe\",\r\n  \"shippingAddress\": \"123 Main St, City\",\r\n  \"mobileNumber\": \"555-555-5555\",\r\n  \"cartItems\": [\r\n    {\r\n      \"gameId\": 101,\r\n      \"count\": 4\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/checkout"
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {
+						"password": "hi",
+						"username": "hi"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/cart/login"
+			},
+			"response": []
+		}
+	]
+}

@@ -17,5 +17,4 @@ public class GameResponse {
     private String name;
     private String description;
     private BigDecimal price;
-    private String review;
 }
