@@ -20,20 +20,15 @@ public class CartService {
     private final ModelMapper modelMapper;
     private final GameRepository gameRepository;
 
-    public CartResponse createCart(Long gameId, CartRequest request) {
-        Game game =
-                gameRepository
-                        .findById(gameId)
-                        .orElseThrow(() -> new RuntimeException("Game not found"));
+    public Long createCart() {
 
         Cart cart = new Cart();
-        cart.setGameId(game.getId());
-        cart.setCount(request.getCount());
 
         Cart savedCart = cartRepository.save(cart);
 
-        return modelMapper.map(savedCart, CartResponse.class);
+        return savedCart.getId();
     }
+
 
     public CartResponse addGameToCart(Long cartId, CartRequest cartRequest) {
         Cart cart =

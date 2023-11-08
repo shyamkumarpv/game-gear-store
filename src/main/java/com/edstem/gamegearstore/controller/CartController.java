@@ -2,6 +2,8 @@ package com.edstem.gamegearstore.controller;
 
 import com.edstem.gamegearstore.contract.request.CartRequest;
 import com.edstem.gamegearstore.contract.response.CartResponse;
+import com.edstem.gamegearstore.model.Cart;
+import com.edstem.gamegearstore.repository.CartRepository;
 import com.edstem.gamegearstore.service.CartService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class CartController {
     private final CartService cartService;
     private final ModelMapper modelMapper;
+    private final CartRepository cartRepository;
 
-    @PostMapping("/{gameId}/create")
-    public CartResponse createCart(@PathVariable Long gameId, @RequestBody CartRequest request) {
-        return cartService.createCart(gameId, request);
+    @PostMapping("/create")
+    public Long createCart() {
+        Cart cart = new Cart();
+        Cart savedCart = cartRepository.save(cart);
+        return savedCart.getId();
     }
+
 
     @PostMapping("/{cartId}/addGame")
     public ResponseEntity<CartResponse> addGameToCart(
