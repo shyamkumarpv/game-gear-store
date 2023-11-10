@@ -1,5 +1,6 @@
 package com.edstem.gamegearstore.contract.response;
 
+import com.edstem.gamegearstore.model.Game;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -12,7 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartResponse {
-    private Long id;
-    private Long gameId;
-    private int count;
+    private Game game;
+    private long count;
 }

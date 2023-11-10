@@ -15,9 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CheckoutResponse {
-    private Long id;
     private String name;
     private String shippingAddress;
     private String mobileNumber;
-    private List<Cart> cartItems;
+    private List<CartResponse> cartItems;
 }

@@ -27,5 +27,4 @@ public class Game {
     private String description;
     private BigDecimal price;
     private String review;
-    @ManyToOne private Cart cart;
 }

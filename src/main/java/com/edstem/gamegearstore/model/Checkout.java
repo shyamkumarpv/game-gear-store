@@ -30,8 +30,8 @@ public class Checkout {
     private String shippingAddress;
     private String mobileNumber;
 
-    @OneToMany
-    private List<Cart> cartItems;
-    @OneToMany(mappedBy = "checkout")
-    private List<Cart> cart = new ArrayList<>();
+//    @OneToMany
+//    private List<Cart> cartItems;
+//    @OneToMany(mappedBy = "checkout")
+//    private List<Cart> cartItems = new ArrayList<>();
 }

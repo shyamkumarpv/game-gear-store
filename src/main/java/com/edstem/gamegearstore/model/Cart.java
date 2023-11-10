@@ -25,16 +25,8 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private Long gameId;
-
-    @OneToMany(mappedBy = "cart")
-    private List<Game> games = new ArrayList<>();
-
-    private int count = 0;
-
-
     @ManyToOne
-    @JoinColumn(name = "checkout_id")
-    private Checkout checkout;
+    private Game game;
+    private long count;
+
 }
