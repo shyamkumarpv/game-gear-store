@@ -17,10 +17,10 @@ public class SignUpController {
     private final SignUpService signUpService;
 
     @PostMapping("/signup")
-    public SignUpResponse signup(@Valid @RequestBody SignUpRequest request)
-    {
+    public SignUpResponse signup(@Valid @RequestBody SignUpRequest request) {
         return signUpService.register(request);
     }
+
     @GetMapping("/username/{id}")
     public SignUpResponse getUsername(@PathVariable Long id) {
         return signUpService.getUsername(id);

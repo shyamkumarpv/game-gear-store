@@ -9,13 +9,12 @@ import com.edstem.gamegearstore.model.Game;
 import com.edstem.gamegearstore.repository.CartRepository;
 import com.edstem.gamegearstore.repository.GameRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -68,18 +67,19 @@ public class GameService {
     }
 
     public CartResponse addGameToCart(CartRequest request, Long gameId) {
-        Game game = gameRepository.findById(gameId).orElseThrow(() -> new RuntimeException("Game not found"));
+        Game game =
+                gameRepository
+                        .findById(gameId)
+                        .orElseThrow(() -> new RuntimeException("Game not found"));
 
-        Cart cart = Cart.builder()
-                .game(game)
-                .count(request.getCount())
-                .build();
+        Cart cart = Cart.builder().game(game).count(request.getCount()).build();
 
         Cart savedCart = cartRepository.save(cart);
         CartResponse response = modelMapper.map(savedCart, CartResponse.class);
 
         return response;
     }
+
     public void removeGameFromCart(Long gameId) {
         Optional<Cart> cart = Optional.ofNullable(cartRepository.findByGameId(gameId));
         if (cart.isPresent()) {
@@ -88,6 +88,7 @@ public class GameService {
             throw new RuntimeException("Game not found in cart");
         }
     }
+
     public List<Cart> getAllCarts() {
         return cartRepository.findAll();
     }

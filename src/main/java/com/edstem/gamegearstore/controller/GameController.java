@@ -6,6 +6,7 @@ import com.edstem.gamegearstore.contract.response.CartResponse;
 import com.edstem.gamegearstore.contract.response.GameResponse;
 import com.edstem.gamegearstore.model.Cart;
 import com.edstem.gamegearstore.service.GameService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/games")
@@ -53,10 +52,12 @@ public class GameController {
     }
 
     @PostMapping("/{gameId}/create")
-    public ResponseEntity<CartResponse> addGameToCart(@RequestBody CartRequest request, @PathVariable Long gameId) {
+    public ResponseEntity<CartResponse> addGameToCart(
+            @RequestBody CartRequest request, @PathVariable Long gameId) {
         CartResponse response = gameService.addGameToCart(request, gameId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
     @DeleteMapping("/carts/{gameId}")
     public void removeGameFromCart(@PathVariable Long gameId) {
         gameService.removeGameFromCart(gameId);

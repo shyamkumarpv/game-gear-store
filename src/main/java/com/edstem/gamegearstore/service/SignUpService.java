@@ -13,19 +13,23 @@ import org.springframework.stereotype.Service;
 public class SignUpService {
     private final SignUpRepository signupRepository;
     private final ModelMapper modelMapper;
-    public SignUpResponse register(SignUpRequest request){
+
+    public SignUpResponse register(SignUpRequest request) {
         SignUp users =
                 SignUp.builder()
                         .username(request.getUsername())
                         .password(request.getPassword())
                         .email(request.getEmail())
                         .build();
-        users =signupRepository.save(users);
+        users = signupRepository.save(users);
         return modelMapper.map(users, SignUpResponse.class);
     }
 
     public SignUpResponse getUsername(Long id) {
-        SignUp signUp = signupRepository.findById(id).orElseThrow(() -> new RuntimeException("Feature not found"));
+        SignUp signUp =
+                signupRepository
+                        .findById(id)
+                        .orElseThrow(() -> new RuntimeException("Feature not found"));
         return modelMapper.map(signUp, SignUpResponse.class);
     }
 }
