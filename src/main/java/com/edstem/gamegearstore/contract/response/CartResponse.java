@@ -2,17 +2,20 @@ package com.edstem.gamegearstore.contract.response;
 
 import com.edstem.gamegearstore.model.Game;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Data
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CartResponse {
-    private Game game;
-    private long count;
+    public Long cartId ;
+    private List<Game> game;
 }

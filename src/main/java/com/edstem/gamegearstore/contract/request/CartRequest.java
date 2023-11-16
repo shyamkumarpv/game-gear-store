@@ -1,10 +1,13 @@
 package com.edstem.gamegearstore.contract.request;
 
+import com.edstem.gamegearstore.model.Game;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,6 +15,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartRequest {
-    private Long gameId;
-    private int count;
+    private List<Game> game;
 }

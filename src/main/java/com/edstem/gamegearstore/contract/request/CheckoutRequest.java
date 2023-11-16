@@ -14,8 +14,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CheckoutRequest {
-    private String name;
-    private String shippingAddress;
-    private String mobileNumber;
-    private List<Cart> cartItems;
+    private String paymentMethod;
+    private String shippingMethod;
 }

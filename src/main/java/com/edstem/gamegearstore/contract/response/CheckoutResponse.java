@@ -1,7 +1,10 @@
 package com.edstem.gamegearstore.contract.response;
 
 import java.util.List;
+
+import com.edstem.gamegearstore.model.Cart;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +15,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CheckoutResponse {
     private String name;
+    private String email;
+    private String mobile;
     private String shippingAddress;
-    private String mobileNumber;
-    private List<CartResponse> cartItems;
+    private Cart cartItems;
+    private long user;
 }
