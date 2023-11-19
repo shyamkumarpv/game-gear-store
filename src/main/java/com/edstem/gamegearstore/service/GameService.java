@@ -1,6 +1,5 @@
 package com.edstem.gamegearstore.service;
 
-import com.edstem.gamegearstore.contract.request.CartRequest;
 import com.edstem.gamegearstore.contract.request.GameRequest;
 import com.edstem.gamegearstore.contract.response.CartResponse;
 import com.edstem.gamegearstore.contract.response.GameResponse;
@@ -12,11 +11,12 @@ import com.edstem.gamegearstore.repository.GameRepository;
 import com.edstem.gamegearstore.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -62,7 +62,6 @@ public class GameService {
         return modelMapper.map(updatedGame, GameResponse.class);
     }
 
-
     public String deleteGameById(Long id) {
         Game game =
                 gameRepository
@@ -73,197 +72,112 @@ public class GameService {
         return "game" + game.getName() + "has been deleted";
     }
 
-
-//    public CartResponse addGameToCart(CartRequest request, Long gameId,long userID) {
+//    public CartResponse addGameToCart(Long gameId, Long userId) {
 //        Game game =
 //                gameRepository
 //                        .findById(gameId)
 //                        .orElseThrow(() -> new RuntimeException("Game not found"));
-//
-//        Cart cart = Cart.builder().game(game).count(request.getCount()).build();
-//
-//        Cart savedCart = cartRepository.save(cart);
-//        CartResponse response = modelMapper.map(savedCart, CartResponse.class);
-//
-//        return response;
-
-
-//    public CartResponse addGameToCart(CartRequest request, Long gameId, long userId) {
-//        Game game =
-//                gameRepository
-//                        .findById(gameId)
+//        User user =
+//                userRepository
+//                        .findById(userId)
 //                        .orElseThrow(
 //                                () ->
-//                                        new RuntimeException(
-//                                                "Game not found with id "
-//                                                        + request.getGameId()));
-//
-//        User user = userRepository.findById(userId).orElseThrow(() ->
-//                new EntityNotFoundException(
-//                        "User not found on id " + userId));
-//        Cart cart = user.getCart();
-//
-//
-//        if (cart == null) {
-//            // If the user doesn't have a cart, create a new one
-//            cart = Cart.builder()
-//                    .user(user)
-//                    .game(new ArrayList<>())
-//                    .count(0L)
-//                    .build();
-//        }
-//
-//        // Assuming a bidirectional relationship between Game and Cart
-//        game.setCart(cart);
-////        game.(request.getCount());
-//
-//        cart.getGame().add(game);
-//        cart.setCount(cart.getGame().stream().mapToLong(Game::getCount).sum());
-//
-//        cart = cartRepository.save(cart);
-//
-//        CartResponse response = CartResponse.builder()
-//                .id(cart.getId())
-//                .game(game.getId())
-//                .count(cart.getCount())
-//                .build();
-//
-//        return response;
-//    }
-    public CartResponse addGameToCart(Long gameId,Long userId){
+//                                        new EntityNotFoundException(
+//                                                "User not found with id " + userId));
+//        List<Game> games = new ArrayList<>();
+//        games.add(game);
+//        Cart cart = Cart.builder().game(games).user(user).build();
+//        Cart savedCart = cartRepository.save(cart);
+//        return modelMapper.map(savedCart, CartResponse.class);
+
+    public CartResponse addGameToCart(Long gameId, Long userId) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id " + userId));
-        List<Game> games = new ArrayList<>();
-        games.add(game);
-        Cart cart = Cart.builder()
-                .game(games)
-                .user(user)
-                .build();
-        Cart savedCart = cartRepository.save(cart);
-        return modelMapper.map(savedCart, CartResponse.class);
+
+        Optional<Cart> existingCartOptional = cartRepository.findByUserId(userId);
+
+        if (existingCartOptional.isPresent()) {
+            Cart existingCart = existingCartOptional.get();
+            List<Game> games = existingCart.getGame();
+            games.add(game);
+            existingCart.setCount(games.stream().mapToLong(Game::getCount).sum());
+            Cart savedCart = cartRepository.save(existingCart);
+            return modelMapper.map(savedCart, CartResponse.class);
+        } else {
+            // Create a new cart if none exists for the user
+            List<Game> games = new ArrayList<>();
+            games.add(game);
+            Cart newCart = Cart.builder().game(games).user(user).build();
+            Cart savedCart = cartRepository.save(newCart);
+            return modelMapper.map(savedCart, CartResponse.class);
+        }
     }
 
-//    public CartResponse addGameToCart(CartRequest request, Long gameId, Long userId) {
-//        Game game = gameRepository.findById(gameId)
-//                .orElseThrow(() -> new RuntimeException("Game not found with id " + gameId));
-//
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + userId));
-//
-//        Cart cart = user.getCart();
-//        if (cart != null) {
-//            cart = Cart.builder()
-//                    .user(user)
-//                    .game(new ArrayList<>())
-//                    .count(0L)
-//                    .build();
-//        }
-//
-//        assert cart != null;
-//        Game existingGame = getExistingGameInCart(cart, gameId);
-//
-//        if (existingGame != null) {
-//            existingGame.setCount(existingGame.getCount() + request.getCount());
-//        } else {
-//            game.setCart(cart);
-//            game.setCount(request.getCount());
-//            cart.getGame().add(game);
-//        }
-//
-//        cart.setCount(cart.getGame().stream().mapToLong(Game::getCount).sum());
-//
-//        cart = cartRepository.save(cart);
-//
-//        CartResponse response = CartResponse.builder()
-//                .id(cart.getId())
-//                .game(game.getId())
-//                .count(cart.getCount())
-//                .build();
-//
-//        return response;
-//    }
 
-    private Game getExistingGameInCart(Cart cart, Long gameId) {
-        return cart.getGame().stream()
-                .filter(g -> g.getGameId().equals(gameId))
-                .findFirst()
-                .orElse(null);
-    }
-
-    public void removeGameFromCart(Long gameId, Long userId) {
+    public List<Cart> findCartsByUserId(Long userId) {
         Optional<Cart> cartOptional = cartRepository.findByUserId(userId);
 
         if (cartOptional.isPresent()) {
-            Cart cart = cartOptional.get();
-            List<Game> games = cart.getGame();
-
-            // Remove the game with the given ID from the list
-            games.removeIf(game -> game.getGameId().equals(gameId));
-
-            // Recalculate the cart count
-            cart.setCount(games.stream().mapToLong(Game::getCount).sum());
-
-            // Save the updated cart
-            cartRepository.save(cart);
+            return Collections.singletonList(cartOptional.get());
         } else {
-            throw new RuntimeException("Cart not found for user with ID: " + userId);
+            return Collections.emptyList();
         }
     }
-    public List<CartResponse> viewCart(Long userId) {
-        Optional<Cart> carts = cartRepository.findByUserId(userId);
-        return carts.stream()
-                .map(cart -> modelMapper.map(cart, CartResponse.class))
-                .collect(Collectors.toList());
+
+
+    public void removeGameFromCart(Long gameId, Long userId) {
+        List<Cart> carts = cartRepository.findCartsByUserId(userId);
+
+        if (!carts.isEmpty()) {
+            for (Cart cart : carts) {
+                List<Game> games = cart.getGame();
+
+                games.removeIf(game -> game.getGameId().equals(gameId));
+                cart.setCount(games.stream().mapToLong(Game::getCount).sum());
+                cartRepository.save(cart);
+            }
+        } else {
+            throw new RuntimeException("Carts not found for user with ID: " + userId);
+        }
     }
 
+    public List<CartResponse> viewCarts(Long userId) {
+        List<Cart> carts = cartRepository.findCartsByUserId(userId);
 
-//    public Cart viewCart(Long userId) {
-//        return cartRepository.findByUserId(userId)
-//                .orElseThrow(() -> new RuntimeException("Cart not found for user with ID: " + userId));
+        if (!carts.isEmpty()) {
+            return carts.stream()
+                    .flatMap(cart -> cart.getGame().stream())
+                    .map(game -> modelMapper.map(game, CartResponse.class))
+                    .collect(Collectors.toList());
+        } else {
+            throw new RuntimeException("Carts not found for user with ID: " + userId);
+        }
+    }
+
+//    public BigDecimal calculateTotalAmountByCartId(Long cartId) {
+//        Cart cart = cartRepository.findById(cartId)
+//                .orElseThrow(() -> new EntityNotFoundException("Cart not found with id: " + cartId));
+//
+//        List<Game> games = cart.getGame();
+//
+//        BigDecimal totalAmount = games.stream()
+//                .map(Game::getPrice)
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//
+//        return totalAmount;
 //    }
+
+
 }
 
 
-//    public void removeGameFromCart(Long gameId, long userID) {
-//        Optional<Cart> cart = Optional.ofNullable(cartRepository.findByGameId(gameId));
-//        if (cart.isPresent()) {
-//            cartRepository.delete(cart.get());
-//        } else {
-//            throw new RuntimeException("Game not found in cart");
+//        private Game getExistingGameInCart (Cart cart, Long gameId){
+//            return cart.getGame().stream()
+//                    .filter(g -> g.getGameId().equals(gameId))
+//                    .findFirst()
+//                    .orElse(null);
 //        }
-//    }
-//}
-//
-//    public List<Cart> getAllCarts() {
-//        return cartRepository.findAll();
-//
-//    }
-//
-//    private CartResponse createCartResponse(Cart cart) {
-//        if (cart != null) {
-//            return new CartResponse(cart.getId(), cart.getGame(), cart.getCount());
-//        } else {
-//            return new CartResponse(null, null, 0L);
-//        }
-//    }
-
-//public CheckoutResponse getCheckoutDetails(@RequestParam long userId, CheckoutRequest checkoutRequest) {
-//    User user = userRepository.findById(userId)
-//            .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//    Cart userCart = cartRepository.findByUserId(user.getId());
-//
-//    return CheckoutResponse.builder()
-//            .name(user.getName())
-//            .email(user.getEmail())
-//            .mobile(user.getMobile())
-//            .shippingAddress(user.getShippingAddress())
-//            .cartItems(Cart.builder().build())
-//            .user(user.getId())
-//            .build();
-//}
-//}
-//
 

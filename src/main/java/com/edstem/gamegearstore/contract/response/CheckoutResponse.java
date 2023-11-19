@@ -1,7 +1,5 @@
 package com.edstem.gamegearstore.contract.response;
 
-import java.util.List;
-
 import com.edstem.gamegearstore.model.Cart;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

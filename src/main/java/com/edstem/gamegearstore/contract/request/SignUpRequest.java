@@ -11,10 +11,13 @@ import lombok.Setter;
 public class SignUpRequest {
     @NotBlank(message = "Name cannot be empty")
     private String name;
+
     @Email
     @NotBlank(message = "Email cannot be empty")
     private String email;
+
     @NotBlank(message = "Password cannot be empty")
     private String password;
+
     private Cart cart;
 }
