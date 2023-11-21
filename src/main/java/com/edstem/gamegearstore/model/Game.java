@@ -4,10 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import java.awt.*;
 import java.math.BigDecimal;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,10 +28,14 @@ public class Game {
     private String name;
     private String description;
     private BigDecimal price;
+    private String imageUrl;
 
-    @OneToOne
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
+    @OneToMany(mappedBy = "game")
+    private List<CartItem> cartItems;
 
+    //    @ManyToOne
+    //    @JoinColumn(name = "cart_id")
+    //    private Cart cart;
+    //
     private long count;
 }

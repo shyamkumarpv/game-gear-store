@@ -29,7 +29,7 @@ public class UserService {
                         .name(request.getName())
                         .email(request.getEmail())
                         .hashedPassword(passwordEncoder.encode(request.getPassword()))
-                        .cart(request.getCart())
+                        //                        .carts(request.getCart())
                         .build();
         user = userRepository.save(user);
         return modelMapper.map(user, SignUpResponse.class);

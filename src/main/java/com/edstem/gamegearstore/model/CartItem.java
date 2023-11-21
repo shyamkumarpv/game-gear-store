@@ -6,8 +6,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,20 +18,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Cart {
+public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cartId;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
 
-    @OneToMany(mappedBy = "cart")
-    private List<CartItem> cartItems;
-
-    //    @OneToMany
-    //    private List<Game> game;
+    @ManyToOne
+    @JoinColumn(name = "game_id")
+    private Game game;
 
     private long count;
 }

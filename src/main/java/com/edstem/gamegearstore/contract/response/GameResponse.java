@@ -18,4 +18,5 @@ public class GameResponse {
     private String description;
     private BigDecimal price;
     private Long count;
+    private String imageUrl;
 }
