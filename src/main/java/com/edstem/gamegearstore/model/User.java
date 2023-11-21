@@ -30,9 +30,5 @@ public class User {
     private String mobile;
 
     @OneToOne private Cart cart;
-    //    @Column(name = "shipping_address")
-    //    private String shippingAddress;
 
-    //    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    //    private Game game;
 }
