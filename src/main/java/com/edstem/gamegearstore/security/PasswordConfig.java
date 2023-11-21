@@ -1,4 +1,4 @@
-package com.edstem.gamegearstore.contract.security;
+package com.edstem.gamegearstore.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

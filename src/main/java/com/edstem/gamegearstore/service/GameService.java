@@ -99,7 +99,6 @@ public class GameService {
             cartItemRepository.save(cartItem);
             return modelMapper.map(savedCart, CartResponse.class);
         } else {
-            // Create a new cart if none exists for the user
             Cart newCart = Cart.builder().user(user).cartItems(new ArrayList<>()).build();
             Cart savedCart = cartRepository.save(newCart);
             CartItem cartItem = CartItem.builder().game(game).cart(savedCart).count(1L).build();

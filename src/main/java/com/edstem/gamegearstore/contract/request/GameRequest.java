@@ -17,4 +17,5 @@ public class GameRequest {
     private String description;
     private BigDecimal price;
     private Long count;
+    private String imageUrl;
 }
