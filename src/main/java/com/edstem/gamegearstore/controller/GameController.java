@@ -43,7 +43,7 @@ public class GameController {
     }
 
     @PutMapping("/{id}")
-    public GameResponse updateGamesById(@PathVariable Long id, @RequestBody GameRequest request) {
+    public GameResponse updateGameById(@PathVariable Long id, @RequestBody GameRequest request) {
         return gameService.updateGameById(id, request);
     }
 

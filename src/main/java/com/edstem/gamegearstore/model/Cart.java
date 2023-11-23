@@ -32,8 +32,5 @@ public class Cart {
     @OneToMany(mappedBy = "cart")
     private List<CartItem> cartItems;
 
-    //    @OneToMany
-    //    private List<Game> game;
-
     private long count;
 }
