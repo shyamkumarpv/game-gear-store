@@ -1,5 +1,6 @@
 package com.edstem.gamegearstore.controller;
 
+import ch.qos.logback.core.model.Model;
 import com.edstem.gamegearstore.contract.response.CartResponse;
 import com.edstem.gamegearstore.contract.response.GameResponse;
 import com.edstem.gamegearstore.service.CartService;
@@ -44,5 +45,13 @@ public class CartController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Game not found in the cart.");
         }
+
     }
+
+    @GetMapping("/items")
+    public ResponseEntity<Integer> getNumberOfItemsInCart(@RequestParam Long userId) {
+        int numberOfItems = cartService.getNumberOfItemsInCart(userId);
+        return ResponseEntity.ok(numberOfItems);
+    }
+
 }

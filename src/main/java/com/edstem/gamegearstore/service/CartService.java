@@ -91,4 +91,17 @@ import java.util.stream.Collectors;
                     .map(cartItem -> modelMapper.map(cartItem.getGame(), GameResponse.class))
                     .collect(Collectors.toList());
         }
+
+        public int getNumberOfItemsInCart(Long userId) {
+            User user = userRepository.findById(userId).orElse(null);
+
+            if (user != null && user.getCart() != null && user.getCart().getCartItems() != null) {
+                return user.getCart().getCartItems().size();
+            }
+            return 0;
+
+        }
+
     }
+
+
