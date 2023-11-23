@@ -138,40 +138,40 @@ class GameControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=ISO-8859-1"))
                 .andExpect(MockMvcResultMatchers.content().string("42"));
     }
-    @Test
-    void testGetGamesInCart() throws Exception {
-        when(gameService.getGamesInCart(Mockito.<Long>any())).thenReturn(new ArrayList<>());
-        MockHttpServletRequestBuilder getResult = MockMvcRequestBuilders.get("/games/carts");
-        MockHttpServletRequestBuilder requestBuilder = getResult.param("userId", String.valueOf(1L));
-        MockMvcBuilders.standaloneSetup(gameController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-                .andExpect(MockMvcResultMatchers.content().string("[]"));
+//    @Test
+//    void testGetGamesInCart() throws Exception {
+//        when(gameService.getGamesInCart(Mockito.<Long>any())).thenReturn(new ArrayList<>());
+//        MockHttpServletRequestBuilder getResult = MockMvcRequestBuilders.get("/games/carts");
+//        MockHttpServletRequestBuilder requestBuilder = getResult.param("userId", String.valueOf(1L));
+//        MockMvcBuilders.standaloneSetup(gameController)
+//                .build()
+//                .perform(requestBuilder)
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+//                .andExpect(MockMvcResultMatchers.content().string("[]"));
     }
-    @Test
-    void testAddGameToCart() throws Exception {
-        CartResponse buildResult = CartResponse.builder().cartId(1L).build();
-        when(gameService.addGameToCart(Mockito.<Long>any(), Mockito.<Long>any())).thenReturn(buildResult);
-        MockHttpServletRequestBuilder postResult = MockMvcRequestBuilders.post("/games/{gameId}/create", 1L);
-        MockHttpServletRequestBuilder requestBuilder = postResult.param("userId", String.valueOf(1L));
-        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(gameController).build().perform(requestBuilder);
-        actualPerformResult.andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-                .andExpect(MockMvcResultMatchers.content().string("{\"cartId\":1}"));
-    }
-    @Test
-    void testRemoveGameFromCart() throws Exception {
-        doNothing().when(gameService).removeGameFromCart(Mockito.<Long>any(), Mockito.<Long>any());
-        MockHttpServletRequestBuilder deleteResult = MockMvcRequestBuilders.delete("/games/carts/{gameId}", 1L);
-        MockHttpServletRequestBuilder requestBuilder = deleteResult.param("userId", String.valueOf(1L));
-        MockMvcBuilders.standaloneSetup(gameController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=ISO-8859-1"))
-                .andExpect(MockMvcResultMatchers.content().string("Game successfully removed from the cart."));
-    }
+//    @Test
+//    void testAddGameToCart() throws Exception {
+//        CartResponse buildResult = CartResponse.builder().cartId(1L).build();
+//        when(gameService.addGameToCart(Mockito.<Long>any(), Mockito.<Long>any())).thenReturn(buildResult);
+//        MockHttpServletRequestBuilder postResult = MockMvcRequestBuilders.post("/games/{gameId}/create", 1L);
+//        MockHttpServletRequestBuilder requestBuilder = postResult.param("userId", String.valueOf(1L));
+//        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(gameController).build().perform(requestBuilder);
+//        actualPerformResult.andExpect(MockMvcResultMatchers.status().isCreated())
+//                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+//                .andExpect(MockMvcResultMatchers.content().string("{\"cartId\":1}"));
+//    }
+//    @Test
+//    void testRemoveGameFromCart() throws Exception {
+//        doNothing().when(gameService).removeGameFromCart(Mockito.<Long>any(), Mockito.<Long>any());
+//        MockHttpServletRequestBuilder deleteResult = MockMvcRequestBuilders.delete("/games/carts/{gameId}", 1L);
+//        MockHttpServletRequestBuilder requestBuilder = deleteResult.param("userId", String.valueOf(1L));
+//        MockMvcBuilders.standaloneSetup(gameController)
+//                .build()
+//                .perform(requestBuilder)
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=ISO-8859-1"))
+//                .andExpect(MockMvcResultMatchers.content().string("Game successfully removed from the cart."));
+//    }
 
-}
+

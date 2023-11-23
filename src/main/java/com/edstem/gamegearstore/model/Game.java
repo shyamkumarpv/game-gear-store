@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.awt.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +32,7 @@ public class Game {
     private String imageUrl;
 
     @OneToMany(mappedBy = "game")
-    private List<CartItem> cartItems;
+    private List<CartItem> cartItems = new ArrayList<>();
     private long count;
 
 }

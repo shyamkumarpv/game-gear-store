@@ -52,27 +52,5 @@ public class GameController {
         return gameService.deleteGameById(id);
     }
 
-    @GetMapping("/carts")
-    public ResponseEntity<List<GameResponse>> getGamesInCart(@RequestParam Long userId) {
-        List<GameResponse> gameResponses = gameService.getGamesInCart(userId);
-        return ResponseEntity.ok(gameResponses);
     }
 
-    @PostMapping("/{gameId}/create")
-    public ResponseEntity<CartResponse> addGameToCart(
-            @PathVariable Long gameId, @RequestParam Long userId) {
-        CartResponse response = gameService.addGameToCart(gameId, userId);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/carts/{gameId}")
-    public ResponseEntity<String> removeGameFromCart(
-            @PathVariable Long gameId, @RequestParam Long userId) {
-        try {
-            gameService.removeGameFromCart(gameId, userId);
-            return ResponseEntity.ok("Game successfully removed from the cart.");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Game not found in the cart.");
-        }
-    }
-}
