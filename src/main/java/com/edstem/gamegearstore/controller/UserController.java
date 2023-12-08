@@ -2,6 +2,7 @@ package com.edstem.gamegearstore.controller;
 
 import com.edstem.gamegearstore.contract.request.LoginRequest;
 import com.edstem.gamegearstore.contract.request.SignUpRequest;
+import com.edstem.gamegearstore.contract.response.LoginResponse;
 import com.edstem.gamegearstore.contract.response.SignUpResponse;
 import com.edstem.gamegearstore.service.UserService;
 import jakarta.validation.Valid;
@@ -24,7 +25,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Long login(@Valid @RequestBody LoginRequest request) {
-        return userService.login(request);
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
+        return userService.authenticate(request);
     }
 }

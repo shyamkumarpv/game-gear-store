@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/games")
+@RequestMapping("v1/user/games")
 @RequiredArgsConstructor
 public class GameController {
 

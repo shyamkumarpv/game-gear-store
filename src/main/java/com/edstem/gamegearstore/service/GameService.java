@@ -25,9 +25,7 @@ import org.springframework.stereotype.Service;
 public class GameService {
     private final GameRepository gameRepository;
     private final ModelMapper modelMapper;
-    private final CartRepository cartRepository;
-    private final UserRepository userRepository;
-    private final CartItemRepository cartItemRepository;
+
 
     public GameResponse addGame(GameRequest request) {
         Game game = modelMapper.map(request, Game.class);
