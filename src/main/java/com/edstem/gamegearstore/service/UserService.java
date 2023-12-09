@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -41,28 +40,31 @@ public class UserService {
         return modelMapper.map(user, SignUpResponse.class);
     }
 
-//    public Long login(LoginRequest request) {
-//        String email = request.getEmail();
-//        String password = request.getPassword();
-//        if (!userRepository.existsByEmail(email)) {
-//            throw new EntityNotFoundException("Invalid login");
-//        }
-//        User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-//        if (passwordEncoder.matches(password, user.getHashedPassword())) {
-//            return user.getId();
-//        }
-//        throw new EntityNotFoundException("user not found");
-//public LoginResponse authenticate(LoginRequest request) {
-//    authenticationManager.authenticate(
-//            new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-//    User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-//    String jwtToken = jwtService.generateToken(user);
-//    return LoginResponse.builder().token(jwtToken).build();
-//}
+    //    public Long login(LoginRequest request) {
+    //        String email = request.getEmail();
+    //        String password = request.getPassword();
+    //        if (!userRepository.existsByEmail(email)) {
+    //            throw new EntityNotFoundException("Invalid login");
+    //        }
+    //        User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+    //        if (passwordEncoder.matches(password, user.getHashedPassword())) {
+    //            return user.getId();
+    //        }
+    //        throw new EntityNotFoundException("user not found");
+    // public LoginResponse authenticate(LoginRequest request) {
+    //    authenticationManager.authenticate(
+    //            new UsernamePasswordAuthenticationToken(request.getEmail(),
+    // request.getPassword()));
+    //    User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+    //    String jwtToken = jwtService.generateToken(user);
+    //    return LoginResponse.builder().token(jwtToken).build();
+    // }
 
     public LoginResponse authenticate(LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        User user =
+                userRepository
+                        .findByEmail(request.getEmail())
+                        .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getHashedPassword())) {
             throw new BadCredentialsException("Invalid credentials");
@@ -72,6 +74,4 @@ public class UserService {
 
         return LoginResponse.builder().token(jwtToken).build();
     }
-
-    }
-
+}

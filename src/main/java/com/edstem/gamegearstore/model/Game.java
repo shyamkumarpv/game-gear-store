@@ -33,6 +33,6 @@ public class Game {
 
     @OneToMany(mappedBy = "game")
     private List<CartItem> cartItems = new ArrayList<>();
-    private long count;
 
+    private long count;
 }

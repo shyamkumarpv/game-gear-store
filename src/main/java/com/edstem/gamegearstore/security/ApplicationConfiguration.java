@@ -1,6 +1,5 @@
 package com.edstem.gamegearstore.security;
 
-
 import com.edstem.gamegearstore.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +23,10 @@ public class ApplicationConfiguration {
     @Bean
     public UserDetailsService userDetailsService() {
         return username ->
-                (UserDetails) userRepository
-                        .findByEmail(username)
-                        .orElseThrow(() -> new EntityNotFoundException("User"));
+                (UserDetails)
+                        userRepository
+                                .findByEmail(username)
+                                .orElseThrow(() -> new EntityNotFoundException("User"));
     }
 
     @Bean

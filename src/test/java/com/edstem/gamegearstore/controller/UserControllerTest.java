@@ -1,5 +1,10 @@
 package com.edstem.gamegearstore.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.edstem.gamegearstore.contract.request.LoginRequest;
 import com.edstem.gamegearstore.contract.request.SignUpRequest;
 import com.edstem.gamegearstore.contract.response.SignUpResponse;
@@ -15,26 +20,16 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UserControllerTest {
-    @MockBean
-    private UserRepository userRepository;
+    @MockBean private UserRepository userRepository;
 
-    @Autowired
-    private UserController userController;
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Autowired private UserController userController;
+    @Autowired private MockMvc mockMvc;
+    @Autowired private ObjectMapper objectMapper;
 
-    @MockBean
-    private UserService userService;
+    @MockBean private UserService userService;
 
     @Test
     public void testSignUp() throws Exception {
@@ -53,9 +48,10 @@ public class UserControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonRequest = objectMapper.writeValueAsString(request);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/v1/user/signup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonRequest))
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/v1/user/signup")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(jsonRequest))
                 .andExpect(status().isOk());
     }
 
@@ -71,11 +67,11 @@ public class UserControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonRequest = objectMapper.writeValueAsString(request);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/v1/user/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonRequest))
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/v1/user/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andExpect(content().string(expectedUserId.toString()));
     }
-
 }

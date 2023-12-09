@@ -1,29 +1,25 @@
 package com.edstem.gamegearstore.security;
 
-
 import com.edstem.gamegearstore.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.persistence.EntityNotFoundException;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-
-
 @Service
-    public class JwtService {
-        private static final String SECRET_KEY =
-                "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
-// private static final String SECRET_KEY = "your-secret-key";
+public class JwtService {
+    private static final String SECRET_KEY =
+            "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
+    // private static final String SECRET_KEY = "your-secret-key";
 
     public static final long JWT_TOKEN_VALIDITY = 1000 * 60 * 60 * 24;
 
@@ -36,26 +32,25 @@ import org.springframework.stereotype.Service;
         return claimsResolver.apply(claims);
     }
 
-//        public String generateToken(User userDetails, String role) {
-//            Map<String, Object> claims = new HashMap<>();
-//            if (role != null) {
-//                claims.put("role", role);
-//            }
-//
-//            return Jwts.builder()
-//                    .setClaims(claims)
-//                    .setSubject(userDetails.getName())
-//                    .claim("userId", userDetails.getId())
-//                    .setIssuedAt(new Date(System.currentTimeMillis()))
-//                    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
-//                    .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-//                    .compact();
-//        }
+    //        public String generateToken(User userDetails, String role) {
+    //            Map<String, Object> claims = new HashMap<>();
+    //            if (role != null) {
+    //                claims.put("role", role);
+    //            }
+    //
+    //            return Jwts.builder()
+    //                    .setClaims(claims)
+    //                    .setSubject(userDetails.getName())
+    //                    .claim("userId", userDetails.getId())
+    //                    .setIssuedAt(new Date(System.currentTimeMillis()))
+    //                    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+    //                    .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+    //                    .compact();
+    //        }
 
     public String generateToken(User userDetails) {
         Map<String, Object> claims = new HashMap<>();
-            claims.put("userId", userDetails.getId());
-
+        claims.put("userId", userDetails.getId());
 
         return Jwts.builder()
                 .setClaims(claims)

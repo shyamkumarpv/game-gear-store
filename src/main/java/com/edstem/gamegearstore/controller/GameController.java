@@ -1,14 +1,11 @@
 package com.edstem.gamegearstore.controller;
 
 import com.edstem.gamegearstore.contract.request.GameRequest;
-import com.edstem.gamegearstore.contract.response.CartResponse;
 import com.edstem.gamegearstore.contract.response.GameResponse;
 import com.edstem.gamegearstore.repository.CartRepository;
 import com.edstem.gamegearstore.service.GameService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,6 +47,4 @@ public class GameController {
     public String deleteGameById(@PathVariable Long id) {
         return gameService.deleteGameById(id);
     }
-
-    }
-
+}
