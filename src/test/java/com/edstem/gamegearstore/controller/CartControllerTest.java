@@ -1,81 +1,89 @@
 package com.edstem.gamegearstore.controller;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 import com.edstem.gamegearstore.contract.response.CartResponse;
+import com.edstem.gamegearstore.contract.response.GameResponse;
+import com.edstem.gamegearstore.model.Cart;
+import com.edstem.gamegearstore.model.CartItem;
+import com.edstem.gamegearstore.model.User;
 import com.edstem.gamegearstore.repository.CartRepository;
 import com.edstem.gamegearstore.service.CartService;
-import java.util.ArrayList;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import java.util.Arrays;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@ContextConfiguration(classes = {CartController.class})
-@ExtendWith(SpringExtension.class)
+@RunWith(SpringRunner.class)
 public class CartControllerTest {
-    @MockBean private CartRepository cartRepository;
 
-    @Autowired private CartController cartController;
+    @InjectMocks private CartController cartController;
 
-    @MockBean private CartService cartService;
+    @Mock private CartService cartService;
 
-    @Test
-    void testviewCart() throws Exception {
-        when(cartService.viewCart(Mockito.<Long>any())).thenReturn(new ArrayList<>());
-        MockHttpServletRequestBuilder getResult = MockMvcRequestBuilders.get("/games/carts");
-        MockHttpServletRequestBuilder requestBuilder =
-                getResult.param("userId", String.valueOf(1L));
-        MockMvcBuilders.standaloneSetup(cartController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-                .andExpect(MockMvcResultMatchers.content().string("[]"));
+    @Mock private ModelMapper modelMapper;
+
+    @Mock private CartRepository cartRepository;
+
+    @Mock private Authentication authentication;
+
+    @Mock private User user;
+
+    @Before
+    public void setUp() {
+        when(authentication.getPrincipal()).thenReturn(user);
+        when(user.getId()).thenReturn(1L);
     }
 
     @Test
-    void testAddGameToCart() throws Exception {
-        CartResponse buildResult = CartResponse.builder().cartId(1L).build();
-        when(cartService.addGameToCart(Mockito.<Long>any(), Mockito.<Long>any()))
-                .thenReturn(buildResult);
-        MockHttpServletRequestBuilder postResult =
-                MockMvcRequestBuilders.post("/games/{gameId}/create", 1L);
-        MockHttpServletRequestBuilder requestBuilder =
-                postResult.param("userId", String.valueOf(1L));
-        ResultActions actualPerformResult =
-                MockMvcBuilders.standaloneSetup(cartController).build().perform(requestBuilder);
-        actualPerformResult
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-                .andExpect(MockMvcResultMatchers.content().string("{\"cartId\":1}"));
+    public void testViewCart() {
+        Cart cart = new Cart();
+        cart.setCartItems(Arrays.asList(new CartItem(), new CartItem()));
+        when(cartRepository.findByUserId(1L)).thenReturn(cart);
+
+        List<GameResponse> gameResponses = cartController.viewCart(authentication);
+
+        verify(cartRepository).findByUserId(1L);
+        assertEquals("Expected number of cart items", 2, gameResponses.size());
     }
 
     @Test
-    void testRemoveGameFromCart() throws Exception {
-        doNothing().when(cartService).removeGameFromCart(Mockito.<Long>any(), Mockito.<Long>any());
-        MockHttpServletRequestBuilder deleteResult =
-                MockMvcRequestBuilders.delete("/games/carts/{gameId}", 1L);
-        MockHttpServletRequestBuilder requestBuilder =
-                deleteResult.param("userId", String.valueOf(1L));
-        MockMvcBuilders.standaloneSetup(cartController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(
-                        MockMvcResultMatchers.content()
-                                .contentType("text/plain;charset=ISO-8859-1"))
-                .andExpect(
-                        MockMvcResultMatchers.content()
-                                .string("Game successfully removed from the cart."));
+    public void testAddGameToCart() {
+        CartResponse cartResponse = new CartResponse();
+        when(cartService.addGameToCart(anyLong(), anyLong())).thenReturn(cartResponse);
+
+        ResponseEntity<CartResponse> response = cartController.addGameToCart(1L, authentication);
+
+        verify(cartService).addGameToCart(1L, 1L);
+        assertEquals("Expected HTTP status", HttpStatus.CREATED, response.getStatusCode());
+    }
+
+    @Test
+    public void testRemoveGameFromCart() {
+        doNothing().when(cartService).removeGameFromCart(anyLong(), anyLong());
+
+        ResponseEntity<String> response = cartController.removeGameFromCart(1L, authentication);
+
+        verify(cartService).removeGameFromCart(1L, 1L);
+        assertEquals("Expected HTTP status", HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void testGetNumberOfItemsInCart_Success() {
+        when(cartService.getNumberOfItemsInCart(1L)).thenReturn(3);
+
+        ResponseEntity<Integer> response = cartController.getNumberOfItemsInCart(authentication);
+
+        verify(cartService).getNumberOfItemsInCart(1L);
+        assertEquals("Expected number of items in cart", Integer.valueOf(3), response.getBody());
     }
 }

@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 public class JwtService {
     private static final String SECRET_KEY =
             "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
-    // private static final String SECRET_KEY = "your-secret-key";
 
     public static final long JWT_TOKEN_VALIDITY = 1000 * 60 * 60 * 24;
 
@@ -31,22 +30,6 @@ public class JwtService {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-
-    //        public String generateToken(User userDetails, String role) {
-    //            Map<String, Object> claims = new HashMap<>();
-    //            if (role != null) {
-    //                claims.put("role", role);
-    //            }
-    //
-    //            return Jwts.builder()
-    //                    .setClaims(claims)
-    //                    .setSubject(userDetails.getName())
-    //                    .claim("userId", userDetails.getId())
-    //                    .setIssuedAt(new Date(System.currentTimeMillis()))
-    //                    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
-    //                    .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-    //                    .compact();
-    //        }
 
     public String generateToken(User userDetails) {
         Map<String, Object> claims = new HashMap<>();

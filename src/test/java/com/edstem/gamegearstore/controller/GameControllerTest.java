@@ -1,192 +1,94 @@
 package com.edstem.gamegearstore.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import com.edstem.gamegearstore.contract.request.GameRequest;
 import com.edstem.gamegearstore.contract.response.GameResponse;
-import com.edstem.gamegearstore.repository.CartRepository;
 import com.edstem.gamegearstore.service.GameService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@ContextConfiguration(classes = {GameController.class})
-@ExtendWith(SpringExtension.class)
-class GameControllerTest {
-    @MockBean private CartRepository cartRepository;
+@ExtendWith(MockitoExtension.class)
+public class GameControllerTest {
 
-    @Autowired private GameController gameController;
+    @Mock private GameService gameService;
 
-    @MockBean private GameService gameService;
+    @InjectMocks private GameController gameController;
+
+    private GameRequest gameRequest;
+    private GameResponse gameResponse;
+
+    @BeforeEach
+    void setUp() {
+        gameRequest = new GameRequest();
+
+        gameResponse = new GameResponse();
+    }
 
     @Test
-    void testAddGame() throws Exception {
-        when(gameService.viewAllGames()).thenReturn(new ArrayList<>());
+    public void testAddGame() {
+        when(gameService.addGame(any(GameRequest.class))).thenReturn(gameResponse);
 
+        GameResponse result = gameController.addGame(gameRequest);
+
+        assertEquals(gameResponse, result);
+    }
+
+    @Test
+    public void testViewAllGames() {
+        List<GameResponse> expectedResponses = new ArrayList<>();
+
+        when(gameService.viewAllGames()).thenReturn(expectedResponses);
+
+        List<GameResponse> result = gameController.viewAllGames();
+
+        assertEquals(expectedResponses, result);
+    }
+
+    @Test
+    public void testViewGameById() {
+        Long gameId = 1L;
+        GameResponse expectedResponse = new GameResponse();
+
+        when(gameService.viewGameById(gameId)).thenReturn(expectedResponse);
+
+        GameResponse result = gameController.viewGameById(gameId);
+
+        assertEquals(expectedResponse, result);
+    }
+
+    @Test
+    public void testUpdateGameById() {
+        Long gameId = 1L;
         GameRequest gameRequest = new GameRequest();
-        gameRequest.setCount(3L);
-        gameRequest.setDescription("The characteristics of someone or something");
-        gameRequest.setImageUrl("https://example.org/example");
-        gameRequest.setName("Name");
-        gameRequest.setPrice(new BigDecimal("2.3"));
-        String content = (new ObjectMapper()).writeValueAsString(gameRequest);
-        MockHttpServletRequestBuilder requestBuilder =
-                MockMvcRequestBuilders.get("/games")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content);
-        MockMvcBuilders.standaloneSetup(gameController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-                .andExpect(MockMvcResultMatchers.content().string("[]"));
+        GameResponse expectedResponse = new GameResponse();
+
+        when(gameService.updateGameById(eq(gameId), any(GameRequest.class)))
+                .thenReturn(expectedResponse);
+
+        GameResponse result = gameController.updateGameById(gameId, gameRequest);
+
+        assertEquals(expectedResponse, result);
     }
 
     @Test
-    void testViewAllGames() throws Exception {
-        when(gameService.viewAllGames()).thenReturn(new ArrayList<>());
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/games");
-        MockMvcBuilders.standaloneSetup(gameController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-                .andExpect(MockMvcResultMatchers.content().string("[]"));
-    }
+    public void testDeleteGameById() {
+        Long gameId = 1L;
+        String expectedMessage = "Game deleted successfully";
 
-    @Test
-    void testViewGameById() throws Exception {
-        GameResponse.GameResponseBuilder nameResult =
-                GameResponse.builder()
-                        .count(3L)
-                        .description("The characteristics of someone or something")
-                        .gameId(1L)
-                        .imageUrl("https://example.org/example")
-                        .name("Name");
-        GameResponse buildResult = nameResult.price(new BigDecimal("2.3")).build();
-        when(gameService.viewGameById(Mockito.<Long>any())).thenReturn(buildResult);
-        MockHttpServletRequestBuilder requestBuilder =
-                MockMvcRequestBuilders.get("/games/{id}", 1L);
-        MockMvcBuilders.standaloneSetup(gameController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-                .andExpect(
-                        MockMvcResultMatchers.content()
-                                .string(
-                                        "{\"gameId\":1,\"name\":\"Name\",\"description\":\"The"
-                                            + " characteristics of someone or"
-                                            + " something\",\"price\":2.3,"
-                                            + "\"count\":3,\"imageUrl\":\"https://example.org/example\"}"));
-    }
+        when(gameService.deleteGameById(gameId)).thenReturn(expectedMessage);
 
-    @Test
-    void testUpdateGameById() throws Exception {
-        GameResponse.GameResponseBuilder nameResult =
-                GameResponse.builder()
-                        .count(3L)
-                        .description("The characteristics of someone or something")
-                        .gameId(1L)
-                        .imageUrl("https://example.org/example")
-                        .name("Name");
-        GameResponse buildResult = nameResult.price(new BigDecimal("2.3")).build();
-        when(gameService.updateGameById(Mockito.<Long>any(), Mockito.<GameRequest>any()))
-                .thenReturn(buildResult);
+        String result = gameController.deleteGameById(gameId);
 
-        GameRequest gameRequest = new GameRequest();
-        gameRequest.setCount(3L);
-        gameRequest.setDescription("The characteristics of someone or something");
-        gameRequest.setImageUrl("https://example.org/example");
-        gameRequest.setName("Name");
-        gameRequest.setPrice(new BigDecimal("2.3"));
-        String content = (new ObjectMapper()).writeValueAsString(gameRequest);
-        MockHttpServletRequestBuilder requestBuilder =
-                MockMvcRequestBuilders.put("/games/{id}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content);
-        MockMvcBuilders.standaloneSetup(gameController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-                .andExpect(
-                        MockMvcResultMatchers.content()
-                                .string(
-                                        "{\"gameId\":1,\"name\":\"Name\",\"description\":\"The"
-                                            + " characteristics of someone or"
-                                            + " something\",\"price\":2.3,"
-                                            + "\"count\":3,\"imageUrl\":\"https://example.org/example\"}"));
+        assertEquals(expectedMessage, result);
     }
-
-    @Test
-    void testDeleteGameById() throws Exception {
-        when(gameService.deleteGameById(Mockito.<Long>any())).thenReturn("42");
-        MockHttpServletRequestBuilder requestBuilder =
-                MockMvcRequestBuilders.delete("/games/{id}", 1L);
-        MockMvcBuilders.standaloneSetup(gameController)
-                .build()
-                .perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(
-                        MockMvcResultMatchers.content()
-                                .contentType("text/plain;charset=ISO-8859-1"))
-                .andExpect(MockMvcResultMatchers.content().string("42"));
-    }
-    //    @Test
-    //    void testGetGamesInCart() throws Exception {
-    //        when(gameService.getGamesInCart(Mockito.<Long>any())).thenReturn(new ArrayList<>());
-    //        MockHttpServletRequestBuilder getResult = MockMvcRequestBuilders.get("/games/carts");
-    //        MockHttpServletRequestBuilder requestBuilder = getResult.param("userId",
-    // String.valueOf(1L));
-    //        MockMvcBuilders.standaloneSetup(gameController)
-    //                .build()
-    //                .perform(requestBuilder)
-    //                .andExpect(MockMvcResultMatchers.status().isOk())
-    //                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-    //                .andExpect(MockMvcResultMatchers.content().string("[]"));
 }
-//    @Test
-//    void testAddGameToCart() throws Exception {
-//        CartResponse buildResult = CartResponse.builder().cartId(1L).build();
-//        when(gameService.addGameToCart(Mockito.<Long>any(),
-// Mockito.<Long>any())).thenReturn(buildResult);
-//        MockHttpServletRequestBuilder postResult =
-// MockMvcRequestBuilders.post("/games/{gameId}/create", 1L);
-//        MockHttpServletRequestBuilder requestBuilder = postResult.param("userId",
-// String.valueOf(1L));
-//        ResultActions actualPerformResult =
-// MockMvcBuilders.standaloneSetup(gameController).build().perform(requestBuilder);
-//        actualPerformResult.andExpect(MockMvcResultMatchers.status().isCreated())
-//                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-//                .andExpect(MockMvcResultMatchers.content().string("{\"cartId\":1}"));
-//    }
-//    @Test
-//    void testRemoveGameFromCart() throws Exception {
-//        doNothing().when(gameService).removeGameFromCart(Mockito.<Long>any(),
-// Mockito.<Long>any());
-//        MockHttpServletRequestBuilder deleteResult =
-// MockMvcRequestBuilders.delete("/games/carts/{gameId}", 1L);
-//        MockHttpServletRequestBuilder requestBuilder = deleteResult.param("userId",
-// String.valueOf(1L));
-//        MockMvcBuilders.standaloneSetup(gameController)
-//                .build()
-//                .perform(requestBuilder)
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//
-// .andExpect(MockMvcResultMatchers.content().contentType("text/plain;charset=ISO-8859-1"))
-//                .andExpect(MockMvcResultMatchers.content().string("Game successfully removed from
-// the cart."));
-//    }

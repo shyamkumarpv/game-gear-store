@@ -1,77 +1,55 @@
 package com.edstem.gamegearstore.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 import com.edstem.gamegearstore.contract.request.LoginRequest;
 import com.edstem.gamegearstore.contract.request.SignUpRequest;
+import com.edstem.gamegearstore.contract.response.LoginResponse;
 import com.edstem.gamegearstore.contract.response.SignUpResponse;
-import com.edstem.gamegearstore.repository.UserRepository;
 import com.edstem.gamegearstore.service.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@RunWith(SpringRunner.class)
 public class UserControllerTest {
-    @MockBean private UserRepository userRepository;
 
-    @Autowired private UserController userController;
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper objectMapper;
+    @InjectMocks private UserController userController;
 
-    @MockBean private UserService userService;
+    @Mock private UserService userService;
+
+    @Before
+    public void setUp() {}
 
     @Test
-    public void testSignUp() throws Exception {
-        SignUpRequest request = new SignUpRequest();
-        request.setName("testUser");
-        request.setPassword("testPassword");
-        request.setEmail("testEmail@test.com");
+    public void testSignUp() {
+        SignUpRequest signUpRequest = new SignUpRequest();
 
-        SignUpResponse response = new SignUpResponse();
-        response.setName("testUser");
-        response.setEmail("testEmail@test.com");
-        response.setHashedPassword("testPassword");
+        SignUpResponse expectedResponse = new SignUpResponse();
 
-        when(userService.signUp(any(SignUpRequest.class))).thenReturn(response);
+        when(userService.signUp(any(SignUpRequest.class))).thenReturn(expectedResponse);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonRequest = objectMapper.writeValueAsString(request);
+        SignUpResponse actualResponse = userController.signUp(signUpRequest);
 
-        mockMvc.perform(
-                        MockMvcRequestBuilders.post("/v1/user/signup")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(jsonRequest))
-                .andExpect(status().isOk());
+        verify(userService).signUp(signUpRequest);
+        assertEquals(expectedResponse, actualResponse);
     }
 
     @Test
-    public void testLogin() throws Exception {
-        LoginRequest request = new LoginRequest();
-        request.setEmail("testEmail@test.com");
-        request.setPassword("testPassword");
-        Long expectedUserId = 1L;
+    public void testLogin() {
+        LoginRequest loginRequest = new LoginRequest();
 
-        when(userService.login(any(LoginRequest.class))).thenReturn(expectedUserId);
+        LoginResponse expectedResponse = new LoginResponse();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonRequest = objectMapper.writeValueAsString(request);
+        when(userService.authenticate(any(LoginRequest.class))).thenReturn(expectedResponse);
 
-        mockMvc.perform(
-                        MockMvcRequestBuilders.post("/v1/user/login")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(jsonRequest))
-                .andExpect(status().isOk())
-                .andExpect(content().string(expectedUserId.toString()));
+        LoginResponse actualResponse = userController.login(loginRequest);
+
+        verify(userService).authenticate(loginRequest);
+        assertEquals(expectedResponse, actualResponse);
     }
 }
